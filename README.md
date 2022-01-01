@@ -22,7 +22,7 @@
 Cloning
 1. Open the folder that you use for your project
 2. Right click anywhere on the folder and click open Git Bash here
-3. Type this command: `git clone https://github.com/ikmalk/El-Corona.git`
+3. Type this command: `https://github.com/ikmalk/Mobile-App-Dev.git`
 4. You may be asked to login to your github
 
 Set up email and name (This will appear when you do a commit)
