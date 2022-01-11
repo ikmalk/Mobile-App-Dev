@@ -10,11 +10,22 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MobileDev">
         <activity
-            android:name=".MainActivity"
+            android:name=".activity.DeletedNotes"
             android:exported="false" />
         <activity
-
-            android:name=".NoteAppActivity"
+            android:name=".activity.Login"
+            android:exported="false" />
+        <activity
+            android:name=".activity.NoteAppActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.Sign"
+            android:exported="false" />
+        <activity
+            android:name=".activity.SettingActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
