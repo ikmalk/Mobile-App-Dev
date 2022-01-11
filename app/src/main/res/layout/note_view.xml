@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/_12sdp"
+    android:layout_marginTop="@dimen/_12sdp"
+    android:background="@drawable/note_background"
+    android:orientation="vertical"
+    >
+
+    <TextView
+        android:id="@+id/noteTextTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_6sdp"
+        android:layout_marginTop="@dimen/_8ssp"
+        android:layout_marginEnd="@dimen/_6sdp"
+        android:textColor="@color/black"
+        android:textSize="@dimen/_13ssp"
+        android:textStyle="bold"
+        />
+    <TextView
+        android:id="@+id/noteTextOverview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_6sdp"
+        android:layout_marginTop="@dimen/_6ssp"
+        android:layout_marginEnd="@dimen/_6sdp"
+        android:textColor="@color/black"
+        android:textSize="@dimen/_12sdp"
+        />
+
+    <TextView
+        android:id="@+id/noteDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_6sdp"
+        android:layout_marginTop="@dimen/_6ssp"
+        android:layout_marginEnd="@dimen/_6sdp"
+        android:textColor="@color/black"
+        android:textSize="@dimen/_8ssp"
+        />
+
+
+
+</LinearLayout>

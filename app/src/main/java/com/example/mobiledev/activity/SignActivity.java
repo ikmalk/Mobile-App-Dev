@@ -10,9 +10,7 @@ import com.example.mobiledev.R;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import org.w3c.dom.Text;
-
-public class Sign extends AppCompatActivity {
+public class SignActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +45,7 @@ public class Sign extends AppCompatActivity {
     }
 
     public void openActivityLogin() {
-        Intent intent = new Intent (this, com.example.mobiledev.activity.Login.class);
+        Intent intent = new Intent (this, LoginActivity.class);
         startActivity(intent);
     }
 }

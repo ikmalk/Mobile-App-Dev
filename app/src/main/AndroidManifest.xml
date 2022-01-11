@@ -13,13 +13,13 @@
             android:name=".activity.DeletedNotes"
             android:exported="false" />
         <activity
-            android:name=".activity.Login"
+            android:name=".activity.LoginActivity"
             android:exported="false" />
         <activity
             android:name=".activity.NoteAppActivity"
             android:exported="false" />
         <activity
-            android:name=".activity.Sign"
+            android:name=".activity.SignActivity"
             android:exported="false" />
         <activity
             android:name=".activity.SettingActivity"

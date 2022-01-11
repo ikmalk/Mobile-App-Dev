@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorGreenBlueLight"
+    android:background="@color/background_color"
+    android:backgroundTint="@null"
     tools:context=".activity.NoteAppActivity">
 
     <ScrollView
@@ -17,7 +18,8 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:animateLayoutChanges="true">
+            android:animateLayoutChanges="true"
+            android:background="@color/background_color">
 
             <ImageView
                 android:id="@+id/imageBack"
@@ -51,46 +53,44 @@
                 android:id="@+id/imageFont"
                 android:layout_width="@dimen/_50sdp"
                 android:layout_height="@dimen/_48sdp"
-                android:layout_marginEnd="@dimen/_12sdp"
-                android:layout_marginTop="@dimen/_15sdp"
                 android:layout_marginStart="@dimen/_12sdp"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:layout_marginEnd="@dimen/_12sdp"
                 android:contentDescription="@string/app_name"
                 android:padding="@dimen/_2sdp"
                 android:src="@drawable/ic_font"
-                app:layout_constraintTop_toBottomOf="@id/imageBack"
                 app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/imageBack"
                 app:tint="@color/colorPurpleLight" />
 
             <EditText
                 android:id="@+id/inputFontSize"
-                android:layout_width="@dimen/_48sdp"
-                android:layout_height="@dimen/_48sdp"
-                android:layout_marginStart="@dimen/_1sdp"
+                android:layout_width="@dimen/_47sdp"
+                android:layout_height="@dimen/_47sdp"
                 android:layout_marginTop="@dimen/_15sdp"
-                android:layout_marginEnd="@dimen/_12sdp"
-                android:background="@null"
+                android:background="@drawable/back_border"
                 android:imeOptions="actionDone"
                 android:importantForAutofill="no"
                 android:includeFontPadding="false"
                 android:inputType="number"
-                android:text="13"
+                android:text="17"
+                android:textAlignment="center"
                 android:textColor="@color/black"
                 android:textSize="@dimen/_18ssp"
-                android:textAlignment="center"
-                app:layout_constraintTop_toBottomOf="@id/imageBack"
-                app:layout_constraintLeft_toRightOf="@id/imageFont"/>
+                app:layout_constraintLeft_toRightOf="@id/imageFont"
+                app:layout_constraintTop_toBottomOf="@id/imageBack" />
 
             <ImageView
                 android:id="@+id/imageAddSizeFont"
                 android:layout_width="@dimen/_23sdp"
                 android:layout_height="@dimen/_23sdp"
-                android:layout_marginEnd="@dimen/_12sdp"
                 android:layout_marginTop="@dimen/_15sdp"
+                android:layout_marginEnd="@dimen/_12sdp"
                 android:contentDescription="@string/app_name"
                 android:padding="@dimen/_2sdp"
                 android:src="@drawable/ic_add"
-                app:layout_constraintTop_toBottomOf="@id/imageBack"
                 app:layout_constraintLeft_toRightOf="@id/inputFontSize"
+                app:layout_constraintTop_toBottomOf="@id/imageBack"
                 app:tint="@color/colorPurpleLight" />
 
             <ImageView
@@ -102,8 +102,8 @@
                 android:contentDescription="@string/app_name"
                 android:padding="@dimen/_2sdp"
                 android:src="@drawable/ic_minus"
-                app:layout_constraintTop_toBottomOf="@id/imageAddSizeFont"
                 app:layout_constraintLeft_toRightOf="@id/inputFontSize"
+                app:layout_constraintTop_toBottomOf="@id/imageAddSizeFont"
                 app:tint="@color/colorPurpleLight" />
 
             <ImageView
@@ -111,27 +111,27 @@
                 android:layout_width="@dimen/_35sdp"
                 android:layout_height="@dimen/_35sdp"
                 android:layout_marginStart="@dimen/_10sdp"
-                android:layout_marginEnd="@dimen/_12sdp"
                 android:layout_marginTop="@dimen/_15sdp"
+                android:layout_marginEnd="@dimen/_12sdp"
                 android:contentDescription="@string/app_name"
                 android:padding="@dimen/_2sdp"
                 android:src="@drawable/ic_color_circle"
-                app:layout_constraintTop_toBottomOf="@id/imageBack"
                 app:layout_constraintLeft_toRightOf="@id/imageAddSizeFont"
+                app:layout_constraintTop_toBottomOf="@id/imageBack"
                 app:tint="@color/black" />
 
             <ImageView
                 android:id="@+id/imageImage"
                 android:layout_width="@dimen/_35sdp"
                 android:layout_height="@dimen/_35sdp"
-                android:layout_marginEnd="@dimen/_12sdp"
-                android:layout_marginTop="@dimen/_15sdp"
                 android:layout_marginStart="@dimen/_4sdp"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:layout_marginEnd="@dimen/_12sdp"
                 android:contentDescription="@string/app_name"
                 android:padding="@dimen/_2sdp"
                 android:src="@drawable/ic_image"
-                app:layout_constraintTop_toBottomOf="@id/imageBack"
                 app:layout_constraintLeft_toRightOf="@id/imageColorChange"
+                app:layout_constraintTop_toBottomOf="@id/imageBack"
                 app:tint="@color/colorPurpleLight" />
 
             <ImageView
@@ -164,7 +164,7 @@
                 android:includeFontPadding="false"
                 android:inputType="text"
                 android:textColor="@color/black"
-                android:textSize="@dimen/_16ssp"
+                android:textSize="@dimen/_19ssp"
                 app:layout_constraintTop_toBottomOf="@id/imageFont" />
 
             <TextView
@@ -195,7 +195,7 @@
                 android:inputType="textMultiLine"
                 android:minHeight="@dimen/_100sdp"
                 android:textColor="@color/black"
-                android:textSize="@dimen/_13ssp"
+                android:textSize="17sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/textDateTime"
 
