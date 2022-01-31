@@ -13,8 +13,11 @@ import java.util.List;
 @Dao
 public interface NoteDao {
 
-    @Query("SELECT * FROM notes ORDER BY id DESC")
-    List<Note> getAllNotes();
+    @Query("SELECT * FROM notes ORDER BY date DESC")
+    List<Note> getAllNotesByDate();
+
+    @Query("SELECT * FROM notes ORDER BY title")
+    List<Note> getAllNotesByName();
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertNote(Note note);

@@ -13,12 +13,17 @@
     <string-array name="fontsize">
         <item>Small</item>
         <item>Medium</item>
-        <item>large</item>
+        <item>Large</item>
     </string-array>
 
     <string-array name="sort">
-        <item>Creation Date</item>
+        <item>Name</item>
         <item>Modification Date</item>
+    </string-array>
+
+    <string-array name="font">
+        <item>Ubuntu</item>
+        <item>Times New Roman</item>
     </string-array>
 
 </resources>

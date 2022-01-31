@@ -1,17 +1,23 @@
 package com.example.mobiledev.activity;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.graphics.drawable.ColorDrawable;
+import android.os.AsyncTask;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mobiledev.R;
+import com.example.mobiledev.database.NoteDatabase;
 import com.example.mobiledev.entities.Note;
-
-import org.w3c.dom.Text;
 
 import java.util.List;
 
@@ -19,9 +25,35 @@ import java.util.List;
 public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteHolder>{
 
     private List<Note> notes;
+    private MainActivity mainAct;
+    private int textSize;
+    private int titleSize;
 
-    public NoteAdapter(List<Note> notes){
+    public NoteAdapter(List<Note> notes, MainActivity mainAct){
+
+        this.mainAct = mainAct;
         this.notes = notes;
+        setSize();
+    }
+
+    private void setSize(){
+
+        String textSizeState = mainAct.getStateTextSize();
+        switch (textSizeState.toLowerCase()){
+            case "small":
+                textSize = mainAct.getResources().getInteger(R.integer.text_font_size_small);
+                titleSize = mainAct.getResources().getInteger(R.integer.title_font_size_small);
+                break;
+            case "medium":
+                textSize = mainAct.getResources().getInteger(R.integer.text_font_size_medium);
+                titleSize = mainAct.getResources().getInteger(R.integer.title_font_size_medium);
+                break;
+
+            case "large":
+                textSize = mainAct.getResources().getInteger(R.integer.text_font_size_large);
+                titleSize = mainAct.getResources().getInteger(R.integer.title_font_size_large);
+                break;
+        }
     }
 
     @NonNull
@@ -32,13 +64,19 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteHolder>{
                         R.layout.note_view,
                         parent,
                         false
-                )
+
+                ), parent.getContext(), mainAct, titleSize, textSize
         );
     }
 
+
+
+
+
     @Override
     public void onBindViewHolder(@NonNull NoteHolder holder, int position) {
-        holder.setNote(notes.get(position));
+        holder.setNote(notes.get(position), position);
+//        holder.layoutNote.setOnClickListener(view -> noteListener.onNoteClicked(notes.get(position), position));
     }
 
     @Override
@@ -54,18 +92,85 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteHolder>{
     static class NoteHolder extends RecyclerView.ViewHolder{
 
         private TextView textTitle, textOverview, textDate;
+        private AlertDialog deleteView;
+        private ImageView deleteImg;
+        private Context context;
+        private View item;
+        private MainActivity mainAct;
+        LinearLayout layoutNote;
+        private int titleSize;
+        private int textSize;
 
-        public NoteHolder(@NonNull View itemView) {
+        public NoteHolder(@NonNull View itemView, Context ctt, MainActivity mAct, int ttSize, int txtSize) {
             super(itemView);
 
             textTitle = (TextView)itemView.findViewById(R.id.noteTextTitle);
             textOverview = (TextView) itemView.findViewById(R.id.noteTextOverview);
             textDate = (TextView) itemView.findViewById(R.id.noteDate);
+            deleteImg = (ImageView) itemView.findViewById(R.id.note_delete);
+            layoutNote = (LinearLayout) itemView.findViewById(R.id.noteLayout);
+
+            context = ctt;
+            item = itemView;
+            mainAct = mAct;
+
+            titleSize = ttSize;
+            textSize = txtSize;
 
         }
 
-        public void setNote(Note note){
+        private void showDeletedNoteDialog(Note note, int position){
+            if(deleteView == null){
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                View view = LayoutInflater.from(context).inflate(
+                        R.layout.delete_note_view,
+                        (ViewGroup) item.findViewById(R.id.dlv_layout)
+                );
+                builder.setView(view);
+                deleteView = builder.create();
+                if(deleteView.getWindow() != null){
+                    deleteView.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+                }
+                view.findViewById(R.id.dlv_delete).setOnClickListener(new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View v) {
+
+                        class DeleteNote extends AsyncTask<Void, Void, Void> {
+
+                            @Override
+                            protected Void doInBackground(Void... voids) {
+                                NoteDatabase.getDatabase(context).noteDao()
+                                        .deleteNote(note);
+                                return null;
+                            }
+
+                        }
+
+                        new DeleteNote().execute();
+                        deleteView.dismiss();
+                        mainAct.setNoteClickedPos(position);
+
+                        mainAct.getNotes(MainActivity.REQUEST_DELETE_NOTE, true);
+
+                    }
+                });
+
+                view.findViewById(R.id.dlv_cancel).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        deleteView.dismiss();
+                    }
+                });
+            }
+
+            deleteView.show();
+        }
+
+        public void setNote(Note note, int position){
             textTitle.setText(note.getTitle());
+            textTitle.setOnClickListener(view -> mainAct.onNoteClicked(note, position));
+            textTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, titleSize);
 
             String text = note.getText();
 
@@ -81,8 +186,17 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteHolder>{
             }
 
             textOverview.setText(overview);
+            textOverview.setOnClickListener(view -> mainAct.onNoteClicked(note, position));
+            textOverview.setTextSize(TypedValue.COMPLEX_UNIT_SP, textSize);
 
             textDate.setText(note.getDate());
+
+            deleteImg.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    showDeletedNoteDialog(note, position);
+                }
+            });
 
         }
 
