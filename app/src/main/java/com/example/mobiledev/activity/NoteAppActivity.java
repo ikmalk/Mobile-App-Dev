@@ -189,6 +189,7 @@ public class NoteAppActivity extends AppCompatActivity {
         note.setText(inputNoteText.getText().toString());
         note.setDate(date.getText().toString());
         note.setFont_size(Integer.parseInt(fontSize.getText().toString()));
+        note.setIsDeleted("No");
 
         if(updateNote != null){
             note.setId(updateNote.getId());

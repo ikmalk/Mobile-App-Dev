@@ -9,7 +9,7 @@ import com.example.mobiledev.dao.NoteDao;
 import com.example.mobiledev.entities.Note;
 
 
-@Database(entities = Note.class, version = 1, exportSchema = false)
+@Database(entities = Note.class, version = 2, exportSchema = false)
 public abstract class NoteDatabase extends RoomDatabase {
 
     private static NoteDatabase noteDatabase;
@@ -18,7 +18,7 @@ public abstract class NoteDatabase extends RoomDatabase {
         if(noteDatabase == null){
             noteDatabase = Room.databaseBuilder(
                     context, NoteDatabase.class, "notes_db"
-            ).build();
+            ).fallbackToDestructiveMigration().build();
         }
         return noteDatabase;
     }
