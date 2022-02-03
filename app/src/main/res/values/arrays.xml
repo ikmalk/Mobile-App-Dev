@@ -22,8 +22,18 @@
     </string-array>
 
     <string-array name="font">
+        <item>Alegreya</item>
+        <item>Arvo</item>
+        <item>IBM Plex Sans</item>
+        <item>Lora</item>
+        <item>Merriweather Sans</item>
+        <item>Nunito</item>
+        <item>Roboto</item>
+        <item>Roboto Slab</item>
+        <item>Rubik</item>
+        <item>Space Mono</item>
         <item>Ubuntu</item>
-        <item>Times New Roman</item>
+        <item>Vesper Libre</item>
     </string-array>
 
 </resources>

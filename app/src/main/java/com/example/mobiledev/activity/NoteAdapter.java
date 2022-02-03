@@ -148,6 +148,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteHolder>{
                         }
 
                         new DeleteNote().execute();
+
                         deleteView.dismiss();
                         mainAct.setNoteClickedPos(position);
 
