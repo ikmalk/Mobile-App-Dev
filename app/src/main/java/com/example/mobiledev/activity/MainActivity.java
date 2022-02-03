@@ -162,10 +162,10 @@ public class MainActivity extends AppCompatActivity{
             protected List<Note> doInBackground(Void... voids) {
                 if(stateSort.equals("Modification Date")){
                     return NoteDatabase.getDatabase(getApplicationContext())
-                            .noteDao().getAllNotesByDate();
+                            .noteDao().getAllNotesByDate("No");
                 }else if(stateSort.equals("Name")){
                     return NoteDatabase.getDatabase(getApplicationContext())
-                            .noteDao().getAllNotesByName();
+                            .noteDao().getAllNotesByName("No");
                 }else
                     return null;
 
@@ -189,6 +189,7 @@ public class MainActivity extends AppCompatActivity{
                 }
                 else if(requestCode == REQUEST_DELETE_NOTE){
                     noteList.remove(noteClickedPos);
+                    notes.remove(noteClickedPos);
                     noteAdapter.notifyItemRemoved(noteClickedPos);
                 }
 

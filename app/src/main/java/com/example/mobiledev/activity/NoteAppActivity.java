@@ -144,7 +144,7 @@ public class NoteAppActivity extends AppCompatActivity {
         });
 
         date.setText(
-                new SimpleDateFormat("EEEE, dd MMMM yyyy HH:mm a", Locale.getDefault())
+                new SimpleDateFormat("dd MMMM yyyy HH:mm a", Locale.getDefault())
                 .format(new Date())
         );
 

@@ -13,14 +13,14 @@ import java.util.List;
 @Dao
 public interface NoteDao {
 
-    @Query("SELECT * FROM notes WHERE isDeleted ='No' ORDER BY date DESC")
-    List<Note> getAllNotesByDate();
+    @Query("SELECT * FROM notes WHERE isDeleted =  :isDel ORDER BY date DESC")
+    List<Note> getAllNotesByDate(String isDel);
 
-    @Query("SELECT * FROM notes WHERE isDeleted ='No' ORDER BY title")
-    List<Note> getAllNotesByName();
+    @Query("SELECT * FROM notes WHERE isDeleted =:isDel ORDER BY title")
+    List<Note> getAllNotesByName(String isDel);
 
-    @Query("SELECT * FROM notes WHERE isDeleted ='Yes' ORDER BY date DESC")
-    List<Note> getAllDeletedNotes();
+    @Query("SELECT * FROM notes WHERE isDeleted = :isDel ORDER BY date DESC")
+    List<Note> getAllDeletedNotes(String isDel);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertNote(Note note);

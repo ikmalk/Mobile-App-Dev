@@ -140,14 +140,17 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteHolder>{
 
                             @Override
                             protected Void doInBackground(Void... voids) {
-                                NoteDatabase.getDatabase(context).noteDao()
-                                        .deleteNote(note);
+//                                NoteDatabase.getDatabase(context).noteDao()
+//                                        .deleteNote(note);
+                                note.setIsDeleted("Yes");
+                                NoteDatabase.getDatabase(context).noteDao().insertNote(note);
                                 return null;
                             }
 
                         }
 
                         new DeleteNote().execute();
+
 
                         deleteView.dismiss();
                         mainAct.setNoteClickedPos(position);
