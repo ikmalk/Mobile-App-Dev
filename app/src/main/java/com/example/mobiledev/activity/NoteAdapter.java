@@ -26,34 +26,62 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteHolder>{
 
     private List<Note> notes;
     private MainActivity mainAct;
+    private DeletedNotes delNote;
     private int textSize;
     private int titleSize;
 
-    public NoteAdapter(List<Note> notes, MainActivity mainAct){
+    public NoteAdapter(List<Note> notes, MainActivity mainAct, DeletedNotes delNote){
 
-        this.mainAct = mainAct;
+        if(mainAct != null){
+            this.mainAct = mainAct;
+        }
+        if(delNote != null){
+            this.delNote = delNote;
+        }
         this.notes = notes;
         setSize();
     }
 
+
     private void setSize(){
+        String textSizeState;
 
-        String textSizeState = mainAct.getStateTextSize();
-        switch (textSizeState.toLowerCase()){
-            case "small":
-                textSize = mainAct.getResources().getInteger(R.integer.text_font_size_small);
-                titleSize = mainAct.getResources().getInteger(R.integer.title_font_size_small);
-                break;
-            case "medium":
-                textSize = mainAct.getResources().getInteger(R.integer.text_font_size_medium);
-                titleSize = mainAct.getResources().getInteger(R.integer.title_font_size_medium);
-                break;
+        if(mainAct != null){
+             textSizeState = mainAct.getStateTextSize();
+            switch (textSizeState.toLowerCase()){
+                case "small":
+                    textSize = mainAct.getResources().getInteger(R.integer.text_font_size_small);
+                    titleSize = mainAct.getResources().getInteger(R.integer.title_font_size_small);
+                    break;
+                case "medium":
+                    textSize = mainAct.getResources().getInteger(R.integer.text_font_size_medium);
+                    titleSize = mainAct.getResources().getInteger(R.integer.title_font_size_medium);
+                    break;
 
-            case "large":
-                textSize = mainAct.getResources().getInteger(R.integer.text_font_size_large);
-                titleSize = mainAct.getResources().getInteger(R.integer.title_font_size_large);
-                break;
+                case "large":
+                    textSize = mainAct.getResources().getInteger(R.integer.text_font_size_large);
+                    titleSize = mainAct.getResources().getInteger(R.integer.title_font_size_large);
+                    break;
+            }
+        }else{
+             textSizeState = delNote.getStateTextSize();
+            switch (textSizeState.toLowerCase()){
+                case "small":
+                    textSize = delNote.getResources().getInteger(R.integer.text_font_size_small);
+                    titleSize = delNote.getResources().getInteger(R.integer.title_font_size_small);
+                    break;
+                case "medium":
+                    textSize = delNote.getResources().getInteger(R.integer.text_font_size_medium);
+                    titleSize = delNote.getResources().getInteger(R.integer.title_font_size_medium);
+                    break;
+
+                case "large":
+                    textSize = delNote.getResources().getInteger(R.integer.text_font_size_large);
+                    titleSize = delNote.getResources().getInteger(R.integer.title_font_size_large);
+                    break;
+            }
         }
+
     }
 
     @NonNull
@@ -65,7 +93,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteHolder>{
                         parent,
                         false
 
-                ), parent.getContext(), mainAct, titleSize, textSize
+                ), parent.getContext(), mainAct, delNote,  titleSize, textSize
         );
     }
 
@@ -97,11 +125,14 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteHolder>{
         private Context context;
         private View item;
         private MainActivity mainAct;
+        private DeletedNotes delNote;
         LinearLayout layoutNote;
         private int titleSize;
         private int textSize;
 
-        public NoteHolder(@NonNull View itemView, Context ctt, MainActivity mAct, int ttSize, int txtSize) {
+        public NoteHolder(@NonNull View itemView, Context ctt, MainActivity mAct,
+                          DeletedNotes dNote, int ttSize,
+                          int txtSize) {
             super(itemView);
 
             textTitle = (TextView)itemView.findViewById(R.id.noteTextTitle);
@@ -113,6 +144,8 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteHolder>{
             context = ctt;
             item = itemView;
             mainAct = mAct;
+            delNote = dNote;
+
 
             titleSize = ttSize;
             textSize = txtSize;
@@ -140,8 +173,12 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteHolder>{
 
                             @Override
                             protected Void doInBackground(Void... voids) {
+                                note.setIsDeleted("Yes");
+
                                 NoteDatabase.getDatabase(context).noteDao()
-                                        .deleteNote(note);
+                                        .insertNote(note);
+
+
                                 return null;
                             }
 

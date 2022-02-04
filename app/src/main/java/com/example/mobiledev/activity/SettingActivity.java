@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -119,12 +120,16 @@ public class SettingActivity extends AppCompatActivity {
         IMGBTNDeleted.setOnClickListener(OCLDeleted);
 
         Switch SWDarkMode = findViewById(R.id.SWDarkMode);
-        SharedPreferences sharedPreferences = null;
-        sharedPreferences = this.getSharedPreferences("night",0);
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+//        SharedPreferences sharedPreferences = null;
+//        sharedPreferences = this.getSharedPreferences("night",0);
         Boolean booleanValue = sharedPreferences.getBoolean("night_mode", true);
 
         if(booleanValue){
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+//            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+            getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
             SWDarkMode.setChecked(true);
         }
 
@@ -133,13 +138,15 @@ public class SettingActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked){
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                    getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+//                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
                     SWDarkMode.setChecked(true);
                     SharedPreferences.Editor editor = finalSharedPreferences.edit();
                     editor.putBoolean("night_mode",true);
                     editor.commit();
                 }else{
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                    getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+//                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
                     SWDarkMode.setChecked(false);
                     SharedPreferences.Editor editor = finalSharedPreferences.edit();
                     editor.putBoolean("night_mode",false);
