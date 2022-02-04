@@ -80,7 +80,6 @@ public class DeletedNotes extends AppCompatActivity {
         noteAdapter2 = new NoteAdapter(noteList2, null, this);
         noteRecyclerView2.setAdapter(noteAdapter2);
 
-
         getNotes(REQUEST_SHOW_NOTE, false);
 
     }
@@ -143,10 +142,10 @@ public class DeletedNotes extends AppCompatActivity {
             protected List<Note> doInBackground(Void... voids) {
                 if(stateSort.equals("Modification Date")){
                     return NoteDatabase.getDatabase(getApplicationContext())
-                            .noteDao().getAllNotesByDate("No");
+                            .noteDao().getAllNotesByDate();
                 }else if(stateSort.equals("Name")){
                     return NoteDatabase.getDatabase(getApplicationContext())
-                            .noteDao().getAllNotesByName("No");
+                            .noteDao().getAllNotesByName();
                 }else
                     return null;
 

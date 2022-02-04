@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity{
 
     private RecyclerView noteRecyclerView;
     private NoteAdapter noteAdapter;
+//    private NoteAdapter noteAdapter;
     private List<Note> noteList;
 
 
@@ -178,10 +179,10 @@ public class MainActivity extends AppCompatActivity{
             protected List<Note> doInBackground(Void... voids) {
                 if(stateSort.equals("Modification Date")){
                     return NoteDatabase.getDatabase(getApplicationContext())
-                            .noteDao().getAllNotesByDate("No");
+                            .noteDao().getAllNotesByDate();
                 }else if(stateSort.equals("Name")){
                     return NoteDatabase.getDatabase(getApplicationContext())
-                            .noteDao().getAllNotesByName("No");
+                            .noteDao().getAllNotesByName();
                 }else
                     return null;
 

@@ -170,15 +170,12 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteHolder>{
                     public void onClick(View v) {
 
                         class DeleteNote extends AsyncTask<Void, Void, Void> {
-
                             @Override
                             protected Void doInBackground(Void... voids) {
-                                note.setIsDeleted("Yes");
+//                                note.setIsDeleted("Yes");
 
                                 NoteDatabase.getDatabase(context).noteDao()
                                         .insertNote(note);
-
-
                                 return null;
                             }
 

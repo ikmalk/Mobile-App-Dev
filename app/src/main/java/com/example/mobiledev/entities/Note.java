@@ -37,17 +37,6 @@ public class Note implements Serializable {
     @ColumnInfo(name = "image_path")
     private String image_path;
 
-    @ColumnInfo(name = "isDeleted")
-    private String isDeleted;
-
-    public String getIsDeleted() {
-        return isDeleted;
-    }
-
-    public void setIsDeleted(String isDeleted) {
-        this.isDeleted = isDeleted;
-    }
-
     public int getId() {
         return id;
     }

@@ -36,8 +36,6 @@ public class NoteAppActivity extends AppCompatActivity {
     private String titleT;
     private String textT;
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,8 +44,6 @@ public class NoteAppActivity extends AppCompatActivity {
         if (getSupportActionBar() != null) {
             getSupportActionBar().hide();
         }
-
-
 
         ImageView imageBack = (ImageView) findViewById(R.id.imageBack);
         imageBack.setOnClickListener((v) -> {onBackPressed();});
