@@ -34,10 +34,12 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.13" />
 
-    <Spinner
-        android:id="@+id/SPFontSize"
+    <TextView
+        android:id="@+id/SPFontSizeText"
         android:layout_width="188dp"
         android:layout_height="48dp"
+        android:text="fsdadfd"
+        android:textColor="@color/textColor"
         android:layout_marginEnd="16dp"
 
         app:layout_constraintBottom_toBottomOf="parent"
@@ -46,6 +48,21 @@
         app:layout_constraintStart_toEndOf="@+id/TVFontSize"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.109"
+
+        android:gravity="center"
+        android:textSize="@dimen/_14sdp"
+        />
+
+    <Spinner
+        android:id="@+id/SPFontSize"
+        android:layout_width="188dp"
+        android:layout_height="48dp"
+        android:layout_marginEnd="16dp"
+        android:visibility="invisible"
+
+        app:layout_constraintTop_toBottomOf="@+id/SPFontSizeText"
+        app:layout_constraintLeft_toLeftOf="@id/SPFontSizeText"
+
         tools:ignore="SpeakableTextPresentCheck" />
 
     <TextView
@@ -61,10 +78,13 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.21" />
 
-    <Spinner
-        android:id="@+id/SPSort"
+    <TextView
+        android:id="@+id/SPSortText"
         android:layout_width="188dp"
         android:layout_height="48dp"
+        android:text="fsdadfd"
+        android:textColor="@color/textColor"
+
         android:layout_marginEnd="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -72,7 +92,23 @@
         app:layout_constraintStart_toEndOf="@+id/TVSort"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.193"
-        tools:ignore="SpeakableTextPresentCheck" />
+
+
+        android:gravity="center"
+        android:textSize="@dimen/_14sdp"
+        />
+
+    <Spinner
+        android:id="@+id/SPSort"
+        android:layout_width="188dp"
+        android:layout_height="48dp"
+        app:layout_constraintTop_toBottomOf="@id/SPSortText"
+        app:layout_constraintLeft_toLeftOf="@id/SPSortText"
+        android:visibility="invisible"
+
+        tools:ignore="SpeakableTextPresentCheck"
+
+        />
 
 <!--    <TextView-->
 <!--        android:id="@+id/TVSaveLocation"-->

@@ -1,12 +1,27 @@
 package com.example.mobiledev.activity;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.Typeface;
+import android.media.Image;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.Settings;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.TypedValue;
@@ -24,6 +39,8 @@ import com.example.mobiledev.R;
 import com.example.mobiledev.entities.Note;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
 
@@ -31,11 +48,16 @@ public class NoteAppActivity extends AppCompatActivity {
 
     private EditText inputNoteTitle, inputNoteText, fontSize;
     private TextView date;
-    private ImageView colorCircle, fontImage, addImage;
+    private ImageView colorCircle, fontImage, addImage, textColImage, imageNote;
+    private CoordinatorLayout screenLayout;
+    private ConstraintLayout screenLayout2;
 
     private Note updateNote;
     private String titleT;
     private String textT;
+    private String fnt;
+    private String textColor;
+    private String screenColor;
     private boolean onCreate;
 
 
@@ -57,6 +79,9 @@ public class NoteAppActivity extends AppCompatActivity {
         inputNoteText = (EditText) findViewById(R.id.inputNote);
         date = findViewById(R.id.textDateTime);
 
+        screenLayout = (CoordinatorLayout) findViewById(R.id.note_screen);
+        screenLayout2 = (ConstraintLayout) findViewById(R.id.note_screen_const);
+
 
         fontSize = (EditText) findViewById(R.id.inputFontSize);
         colorCircle = (ImageView) findViewById(R.id.imageColorChange);
@@ -64,38 +89,9 @@ public class NoteAppActivity extends AppCompatActivity {
         ImageView imageAddSize = (ImageView) findViewById(R.id.imageAddSizeFont);
         ImageView imageMinusSize = (ImageView) findViewById(R.id.imageMinusSizeFont);
         addImage = (ImageView) findViewById(R.id.imageImage);
+        imageNote = findViewById(R.id.noteImageView);
 
-        Spinner fontSpinner = (Spinner) findViewById(R.id.noteFontSpinner);
-        ArrayAdapter<CharSequence> fsAdapter = ArrayAdapter.createFromResource(
-                getBaseContext(),
-                R.array.font,
-                R.layout.spinner_layout
-
-        );
-        fontSpinner.setAdapter(fsAdapter);
-
-        fontSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if(!onCreate){
-                    setFontTypeface(i, inputNoteText);
-                }
-
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-            }
-        });
-
-
-        fontImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-//                fontSpinner.setVisibility(Spinner.VISIBLE);
-                fontSpinner.performClick();
-            }
-        });
+        textColImage = (ImageView) findViewById(R.id.imageTextColor);
 
         fontSize.addTextChangedListener(new TextWatcher() {
             @Override
@@ -163,19 +159,220 @@ public class NoteAppActivity extends AppCompatActivity {
             }
         });
 
-        setFontTypeface(3, inputNoteText);
+        addImage.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                pickImageFromGallery();
+            }
+        });
 
+        //////////////////////////////////////////////////////////////////////////
+
+        fnt = "Ubuntu";
+        textColor = "#000000";
+        screenColor = "#E9F2EB";
 
         if (getIntent().getBooleanExtra("isUpdate", false)) {
             updateNote = (Note) getIntent().getSerializableExtra("note");
             setUpdateNote();
+            fnt = updateNote.getFont();
         }
+
+        ArrayList<String> fontArr = new ArrayList<>();
+        fontArr.addAll(Arrays.asList(getResources().getStringArray(R.array.font)));
+
+        fontArr.remove(fontArr.indexOf(fnt));
+        fontArr.add(0, fnt);
+
+        Spinner fontSpinner = (Spinner) findViewById(R.id.noteFontSpinner);
+        ArrayAdapter<CharSequence> fsAdapter = new ArrayAdapter(
+                getBaseContext(),
+                R.layout.spinner_layout,
+                fontArr
+
+        );
+
+        fontSpinner.setAdapter(fsAdapter);
+
+        fontSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                if(!onCreate){
+                    setFontTypeface(fontArr.get(i), inputNoteText);
+                    fnt = fontArr.get(i);
+                }
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+            }
+        });
+
+
+        fontImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//                fontSpinner.setVisibility(Spinner.VISIBLE);
+                fontSpinner.performClick();
+            }
+        });
+
+        /////////////////
+        ArrayList<String> col = new ArrayList<>();
+        String[] v = getResources().getStringArray(R.array.text_color);
+        col.addAll(Arrays.asList(v));
+
+        col.remove(col.indexOf(textColor));
+        col.add(0, textColor);
+
+        TextColorAdapter textColorAdapter = new TextColorAdapter(this, R.layout.text_color_layout, col);
+        Spinner textColSpinner = (Spinner) findViewById(R.id.textColSpinner);
+        textColSpinner.setAdapter(textColorAdapter);
+
+        textColSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                inputNoteText.setTextColor(Color.parseColor(col.get(i)));
+                inputNoteTitle.setTextColor(Color.parseColor(col.get(i)));
+                textColImage.setColorFilter(Color.parseColor(col.get(i)), PorterDuff.Mode.SRC_ATOP);
+                textColor = col.get(i);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+            }
+        });
+
+        textColImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//                fontSpinner.setVisibility(Spinner.VISIBLE);
+                textColSpinner.performClick();
+            }
+        });
+
+        ///////
+        ArrayList<String> scl = new ArrayList<>();
+        String[] c = getResources().getStringArray(R.array.screen_color);
+        scl.addAll(Arrays.asList(c));
+
+        scl.remove(scl.indexOf(screenColor));
+        scl.add(0, screenColor);
+
+        ScreenColorAdapter screenColorAdapter = new ScreenColorAdapter(this, R.layout.screen_color_layout, scl);
+        Spinner screenColSpinner = (Spinner) findViewById(R.id.screenColSpinner);
+        screenColSpinner.setAdapter(screenColorAdapter);
+
+        screenColSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                screenLayout.setBackgroundColor(Color.parseColor(scl.get(i)));
+                screenLayout2.setBackgroundColor(Color.parseColor(scl.get(i)));
+                colorCircle.setColorFilter(Color.parseColor(scl.get(i)), PorterDuff.Mode.SRC_ATOP);
+                screenColor = scl.get(i);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+        colorCircle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//                fontSpinner.setVisibility(Spinner.VISIBLE);
+                screenColSpinner.performClick();
+            }
+        });
+
+//////////////////////////////////////////////////////////////////////////////////////////////
 
         onCreate = false;
 
     }
 
-    private void setFontTypeface(int i, EditText et){
+    private void pickFromGallery(View view) {
+        if(isPermissionGranted()){
+            pickImageFromGallery();
+        } else {
+            takePermissions();
+        }
+    }
+
+    private boolean isPermissionGranted() {
+        if(Build.VERSION.SDK_INT == Build.VERSION_CODES.R){
+            return Environment.isExternalStorageManager();
+        } else {
+            int readExternalStorage = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
+            return readExternalStorage == PackageManager.PERMISSION_GRANTED;
+        }
+    }
+
+    private void takePermissions(){
+        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.R){
+            try {
+                Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
+                intent.addCategory("android.intent.category, DEFAULT");
+                intent.setData(Uri.parse(String.format("package%s",getApplicationContext().getPackageName())));
+                startActivityForResult(intent,100);
+            } catch (Exception exception) {
+                Intent intent = new Intent();
+                intent.setAction(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
+                startActivityForResult(intent,100);
+            }
+        } else {
+            ActivityCompat.requestPermissions(this,new String[] {Manifest.permission.READ_EXTERNAL_STORAGE}, 101);
+        }
+    }
+
+    private void pickImageFromGallery() {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("image/*");
+        intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        startActivityForResult(intent,102);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == RESULT_OK){
+            if(requestCode == 100){
+                if(Build.VERSION.SDK_INT == Build.VERSION_CODES.R) {
+                    if(Environment.isExternalStorageManager()){
+                        pickImageFromGallery();
+                    } else {
+                        takePermissions();
+                    }
+                }
+            } else if (requestCode == 102){
+                if(data != null){
+                    Uri uri = data.getData();
+                    if(uri != null){
+                        imageNote.setImageURI(uri);
+                    }
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if(grantResults.length > 0){
+            if(requestCode == 101){
+                boolean readExternalStorage = grantResults[0] == PackageManager.PERMISSION_GRANTED;
+                if(readExternalStorage){
+                    pickImageFromGallery();
+                }else{
+                    takePermissions();
+                }
+            }
+        }
+    }
+
+    private void setFontTypeface(String fnt, EditText et){
         /*
                 <item>Alegreya</item>
                 <item>Arvo</item>
@@ -192,64 +389,64 @@ public class NoteAppActivity extends AppCompatActivity {
                  */
 
         Typeface type;
-        switch (i) {
-            case 0:
+        switch (fnt) {
+            case "Alegreya":
                 // Alegreya
                 type = ResourcesCompat.getFont(getApplicationContext(), R.font.alegreya);
                 et.setTypeface(type);
                 break;
 
-            case 1:
+            case "Arvo":
                 // Arvo
                 type = ResourcesCompat.getFont(getApplicationContext(), R.font.arvo);
                 et.setTypeface(type);
                 break;
-            case 2:
+            case "IBM Plex Sans":
                 // IBM Plex Sans
                 type = ResourcesCompat.getFont(getApplicationContext(), R.font.ibm_plex_sans);
                 et.setTypeface(type);
                 break;
-            case 3:
+            case "Lora":
                 // Lora
                 type = ResourcesCompat.getFont(getApplicationContext(), R.font.lora);
                 et.setTypeface(type);
                 break;
-            case 4:
+            case "Merriweather Sans":
                 // Merriweather Sans
                 type = ResourcesCompat.getFont(getApplicationContext(), R.font.merriweather_sans);
                 et.setTypeface(type);
                 break;
-            case 5:
+            case "Nunito":
                 // Nunito
                 type = ResourcesCompat.getFont(getApplicationContext(), R.font.nunito);
                 et.setTypeface(type);
                 break;
-            case 6:
+            case "Roboto":
                 // Roboto
                 type = ResourcesCompat.getFont(getApplicationContext(), R.font.roboto);
                 et.setTypeface(type);
                 break;
-            case 7:
+            case "Roboto Slab":
                 // Roboto Slab
                 type = ResourcesCompat.getFont(getApplicationContext(), R.font.roboto_slab);
                 et.setTypeface(type);
                 break;
-            case 8:
+            case "Rubik":
                 // Rubik
                 type = ResourcesCompat.getFont(getApplicationContext(), R.font.rubik);
                 et.setTypeface(type);
                 break;
-            case 9:
+            case "Space Mono":
                 // Space Mono
                 type = ResourcesCompat.getFont(getApplicationContext(), R.font.space_mono);
                 et.setTypeface(type);
                 break;
-            case 10:
+            case "Ubuntu":
                 // Ubuntu
                 type = ResourcesCompat.getFont(getApplicationContext(), R.font.ubuntu);
                 et.setTypeface(type);
                 break;
-            case 11:
+            case "Vesper Libre":
                 // Vesper Libre
                 type = ResourcesCompat.getFont(getApplicationContext(), R.font.vesper_libre);
                 et.setTypeface(type);
@@ -264,9 +461,10 @@ public class NoteAppActivity extends AppCompatActivity {
         inputNoteText.setText(updateNote.getText());
         date.setText(updateNote.getDate());
         fontSize.setText(updateNote.getFont_size()+"");
-
         textT = updateNote.getText();
         titleT = updateNote.getText();
+        textColor = updateNote.getText_color();
+        screenColor = updateNote.getBackground_color();
 
     }
 
@@ -284,6 +482,9 @@ public class NoteAppActivity extends AppCompatActivity {
         note.setDate(date.getText().toString());
         note.setFont_size(Integer.parseInt(fontSize.getText().toString()));
         note.setIsDeleted("No");
+        note.setFont(fnt);
+        note.setBackground_color(screenColor);
+        note.setText_color(textColor);
 
         if(updateNote != null){
             note.setId(updateNote.getId());

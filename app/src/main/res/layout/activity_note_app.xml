@@ -2,6 +2,7 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/note_screen"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background_color"
@@ -19,7 +20,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:animateLayoutChanges="true"
-            android:background="@color/background_color">
+            android:background="@color/background_color"
+            android:id="@+id/note_screen_const"
+            >
 
             <ImageView
                 android:id="@+id/imageBack"
@@ -64,8 +67,8 @@
 
             <ImageView
                 android:id="@+id/imageFont"
-                android:layout_width="@dimen/_50sdp"
-                android:layout_height="@dimen/_48sdp"
+                android:layout_width="@dimen/_45sdp"
+                android:layout_height="@dimen/_45sdp"
                 android:layout_marginStart="@dimen/_12sdp"
                 android:layout_marginTop="@dimen/_15sdp"
                 android:layout_marginEnd="@dimen/_12sdp"
@@ -83,7 +86,7 @@
                 android:layout_width="@dimen/_47sdp"
                 android:layout_height="@dimen/_47sdp"
                 android:layout_marginTop="@dimen/_15sdp"
-                android:background="@drawable/back_border"
+
                 android:imeOptions="actionDone"
                 android:importantForAutofill="no"
                 android:includeFontPadding="false"
@@ -91,6 +94,7 @@
                 android:text="17"
                 android:textAlignment="center"
                 android:textColor="@color/black"
+                android:background="@drawable/back_border"
                 android:textSize="@dimen/_18ssp"
                 app:layout_constraintLeft_toRightOf="@id/imageFont"
                 app:layout_constraintTop_toBottomOf="@id/imageBack" />
@@ -130,10 +134,24 @@
                 android:layout_marginEnd="@dimen/_12sdp"
                 android:contentDescription="@string/app_name"
                 android:padding="@dimen/_2sdp"
+                android:background="@drawable/back_border"
+                android:backgroundTint="@color/colorPurpleLight"
                 android:src="@drawable/ic_color_circle"
                 app:layout_constraintLeft_toRightOf="@id/imageAddSizeFont"
                 app:layout_constraintTop_toBottomOf="@id/imageBack"
                 app:tint="@color/black" />
+
+            <Spinner
+                android:id="@+id/screenColSpinner"
+                android:layout_width="@dimen/_35sdp"
+                android:layout_height="@dimen/_35sdp"
+
+                app:layout_constraintTop_toBottomOf="@id/imageColorChange"
+                app:layout_constraintLeft_toLeftOf="@id/imageColorChange"
+                tools:ignore="SpeakableTextPresentCheck"
+                android:visibility="invisible"
+
+                />
 
             <ImageView
                 android:id="@+id/imageImage"
@@ -143,23 +161,31 @@
                 android:contentDescription="@string/app_name"
                 android:padding="@dimen/_2sdp"
                 android:src="@drawable/ic_image"
-                app:layout_constraintLeft_toRightOf="@id/imageColorChange"
+                app:layout_constraintLeft_toRightOf="@id/imageTextColor"
                 app:layout_constraintTop_toBottomOf="@id/imageBack"
                 app:tint="@color/colorPurpleLight" />
 
             <ImageView
-                android:id="@+id/image3dot"
+                android:id="@+id/imageTextColor"
                 android:layout_width="@dimen/_35sdp"
                 android:layout_height="@dimen/_35sdp"
-                android:layout_marginEnd="@dimen/_12sdp"
-
+                android:layout_marginTop="@dimen/_15sdp"
                 android:contentDescription="@string/app_name"
-                android:padding="@dimen/_4sdp"
-                android:src="@drawable/ic_3dot"
-                app:layout_constraintBottom_toBottomOf="@id/imageFont"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@id/imageFont"
-                app:tint="@color/colorPurpleLight"
+                android:padding="@dimen/_2sdp"
+                android:src="@drawable/ic_text_col"
+                app:layout_constraintLeft_toRightOf="@id/imageColorChange"
+                app:layout_constraintTop_toBottomOf="@id/imageBack"
+                app:tint="@color/colorPurpleLight" />
+
+            <Spinner
+                android:id="@+id/textColSpinner"
+                android:layout_width="@dimen/_35sdp"
+                android:layout_height="@dimen/_35sdp"
+
+                app:layout_constraintTop_toBottomOf="@id/imageTextColor"
+                app:layout_constraintLeft_toLeftOf="@id/imageTextColor"
+                tools:ignore="SpeakableTextPresentCheck"
+                android:visibility="invisible"
 
                 />
 
@@ -200,7 +226,7 @@
                 android:layout_marginEnd="@dimen/_10sdp"
                 android:layout_marginTop="@dimen/_14sdp"
                 android:adjustViewBounds="true"
-                android:visibility="gone"
+                android:visibility="visible"
                 app:layout_constraintTop_toBottomOf="@+id/textDateTime"
                 />
 

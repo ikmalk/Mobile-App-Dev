@@ -2,8 +2,10 @@ package com.example.mobiledev.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -11,6 +13,7 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
@@ -55,6 +58,7 @@ public class MainActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         if (getSupportActionBar() != null) {
             getSupportActionBar().hide();
         }
@@ -97,10 +101,22 @@ public class MainActivity extends AppCompatActivity{
         );
 
         noteList = new ArrayList<>();
-        noteAdapter = new NoteAdapter(noteList, this);
+        noteAdapter = new NoteAdapter(noteList, this, true);
         noteRecyclerView.setAdapter(noteAdapter);
 
         getNotes(REQUEST_SHOW_NOTE, false);
+
+        //new
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        Boolean booleanValue = sharedPreferences.getBoolean("night_mode", true);
+
+        if(booleanValue){
+//            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+            getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+//            SWDarkMode.setChecked(true);
+        }
+
 
     }
 
@@ -131,7 +147,6 @@ public class MainActivity extends AppCompatActivity{
         try {
             fis = getApplicationContext().openFileInput("saveState"
             );
-            System.out.println("Main Act:   "+getFilesDir());
         } catch (FileNotFoundException e) {
             createSaveFile();
             getSaveState();
@@ -188,8 +203,12 @@ public class MainActivity extends AppCompatActivity{
 
                 }
                 else if(requestCode == REQUEST_DELETE_NOTE){
-                    noteList.remove(noteClickedPos);
-                    notes.remove(noteClickedPos);
+                    try{
+                        noteList.remove(noteClickedPos);
+                        notes.remove(noteClickedPos);
+                    }catch(IndexOutOfBoundsException e){
+                    }
+
                     noteAdapter.notifyItemRemoved(noteClickedPos);
                 }
 
@@ -232,7 +251,6 @@ public class MainActivity extends AppCompatActivity{
         }
         else if(requestCode == REQUEST_SETTING_CHANGE){
             getSaveState();
-            System.out.println("get Save state");
         }
     }
 

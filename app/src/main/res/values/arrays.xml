@@ -36,4 +36,25 @@
         <item>Vesper Libre</item>
     </string-array>
 
+    <string-array name="text_color">
+        <item>#000000</item>
+        <item>#003300</item>
+        <item>#000033</item>
+        <item>#330033</item>
+        <item>#800080</item>
+        <item>#808000</item>
+
+
+    </string-array>
+
+    <string-array name="screen_color">
+        <item>#E9F2EB</item>
+        <item>#EEE9E9</item>
+        <item>#B7C0EE</item>
+        <item>#B1DA99</item>
+        <item>#93DBDB</item>
+        <item>#FFD7FF</item>
+
+    </string-array>
+
 </resources>

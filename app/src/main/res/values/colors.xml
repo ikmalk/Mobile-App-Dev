@@ -14,8 +14,9 @@
     <color name="colorGreenBlueLight">#EEFBF1</color>
     <color name="colorRedSalmon">#FA8072</color>
     <color name="colorGray">#AEAEAE</color>
+    <color name="textColor">#202020</color>
     <!--  Light Mode  -->
-    <color name="background_color">#EEFBF1</color>
+    <color name="background_color">#F0FCF2</color>
     <color name="background_color_line">#FF000000</color>
 
 </resources>

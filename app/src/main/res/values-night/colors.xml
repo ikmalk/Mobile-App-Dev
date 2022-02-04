@@ -12,7 +12,10 @@
     <color name="colorCyanHeavy">#6F64CE</color>
     <color name="colorCyanLight">#B7C0EE</color>
     <color name="colorGreenBlueLight">#EEFBF1</color>
+    <color name="colorRedSalmon">#FA8072</color>
+    <color name="colorGray">#AEAEAE</color>
+    <color name="textColor">#AEAEAE</color>
     <!--  Dark Mode  -->
-    <color name="background_color">#050505</color>
+    <color name="background_color">#303030</color>
     <color name="background_color_line">#FFFFFFFF</color>
 </resources>

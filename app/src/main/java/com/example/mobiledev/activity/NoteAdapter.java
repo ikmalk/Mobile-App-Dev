@@ -2,7 +2,10 @@ package com.example.mobiledev.activity;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.GradientDrawable;
 import android.os.AsyncTask;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -19,54 +22,106 @@ import com.example.mobiledev.R;
 import com.example.mobiledev.database.NoteDatabase;
 import com.example.mobiledev.entities.Note;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 
 public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteHolder>{
 
     private List<Note> notes;
     private MainActivity mainAct;
+    private DeletedNotes delAct;
     private int textSize;
     private int titleSize;
+    private boolean isMain;
 
-    public NoteAdapter(List<Note> notes, MainActivity mainAct){
+    public NoteAdapter(List<Note> notes, MainActivity mainAct, boolean isMain){
 
         this.mainAct = mainAct;
         this.notes = notes;
-        setSize();
+        this.isMain = isMain;
+        setSize(mainAct.getStateTextSize(), 0);
     }
 
-    private void setSize(){
+    public NoteAdapter(List<Note> notes, DeletedNotes delAct, boolean isMain){
 
-        String textSizeState = mainAct.getStateTextSize();
-        switch (textSizeState.toLowerCase()){
-            case "small":
-                textSize = mainAct.getResources().getInteger(R.integer.text_font_size_small);
-                titleSize = mainAct.getResources().getInteger(R.integer.title_font_size_small);
-                break;
-            case "medium":
-                textSize = mainAct.getResources().getInteger(R.integer.text_font_size_medium);
-                titleSize = mainAct.getResources().getInteger(R.integer.title_font_size_medium);
-                break;
+        this.delAct = delAct;
+        this.notes = notes;
+        this.isMain = isMain;
+        setSize(delAct.getStateTextSize(), 1);
+    }
 
-            case "large":
-                textSize = mainAct.getResources().getInteger(R.integer.text_font_size_large);
-                titleSize = mainAct.getResources().getInteger(R.integer.title_font_size_large);
-                break;
+    private void setSize(String textSizeState, int k) {
+
+
+        if (k == 0) {
+            switch (textSizeState.toLowerCase()) {
+                case "small":
+                    textSize = mainAct.getResources().getInteger(R.integer.text_font_size_small);
+                    titleSize = mainAct.getResources().getInteger(R.integer.title_font_size_small);
+                    break;
+                case "medium":
+                    textSize = mainAct.getResources().getInteger(R.integer.text_font_size_medium);
+                    titleSize = mainAct.getResources().getInteger(R.integer.title_font_size_medium);
+                    break;
+
+                case "large":
+                    textSize = mainAct.getResources().getInteger(R.integer.text_font_size_large);
+                    titleSize = mainAct.getResources().getInteger(R.integer.title_font_size_large);
+                    break;
+            }
+        } else if (k == 1) {
+            switch (textSizeState.toLowerCase()) {
+                case "small":
+                    textSize = delAct.getResources().getInteger(R.integer.text_font_size_small);
+                    titleSize = delAct.getResources().getInteger(R.integer.title_font_size_small);
+                    break;
+                case "medium":
+                    textSize = delAct.getResources().getInteger(R.integer.text_font_size_medium);
+                    titleSize = delAct.getResources().getInteger(R.integer.title_font_size_medium);
+                    break;
+
+                case "large":
+                    textSize = delAct.getResources().getInteger(R.integer.text_font_size_large);
+                    titleSize = delAct.getResources().getInteger(R.integer.title_font_size_large);
+                    break;
+            }
+
         }
     }
+
+
 
     @NonNull
     @Override
     public NoteHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        if(isMain){
+            return new NoteHolder(
+                    LayoutInflater.from(parent.getContext()).inflate(
+                            R.layout.note_view,
+                            parent,
+                            false
+
+                    ), parent.getContext(), mainAct, titleSize, textSize, isMain
+            );
+        }
         return new NoteHolder(
                 LayoutInflater.from(parent.getContext()).inflate(
                         R.layout.note_view,
                         parent,
                         false
 
-                ), parent.getContext(), mainAct, titleSize, textSize
+                ), parent.getContext(), delAct, titleSize, textSize, isMain
         );
+
     }
 
 
@@ -97,11 +152,15 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteHolder>{
         private Context context;
         private View item;
         private MainActivity mainAct;
-        LinearLayout layoutNote;
+        private DeletedNotes delAct;
+        private LinearLayout layoutNote;
+        private LinearLayout layoutNote2;
         private int titleSize;
         private int textSize;
+        private boolean isMain;
 
-        public NoteHolder(@NonNull View itemView, Context ctt, MainActivity mAct, int ttSize, int txtSize) {
+        public NoteHolder(@NonNull View itemView, Context ctt, MainActivity mAct,
+                          int ttSize, int txtSize, boolean main) {
             super(itemView);
 
             textTitle = (TextView)itemView.findViewById(R.id.noteTextTitle);
@@ -109,10 +168,35 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteHolder>{
             textDate = (TextView) itemView.findViewById(R.id.noteDate);
             deleteImg = (ImageView) itemView.findViewById(R.id.note_delete);
             layoutNote = (LinearLayout) itemView.findViewById(R.id.noteLayout);
+            layoutNote2 = (LinearLayout) itemView.findViewById(R.id.noteLayout2);
 
             context = ctt;
             item = itemView;
             mainAct = mAct;
+            isMain = main;
+
+            titleSize = ttSize;
+            textSize = txtSize;
+
+        }
+
+        public NoteHolder(@NonNull View itemView, Context ctt, DeletedNotes dAct,
+                          int ttSize, int txtSize, boolean main) {
+            super(itemView);
+
+            textTitle = (TextView)itemView.findViewById(R.id.noteTextTitle);
+            textOverview = (TextView) itemView.findViewById(R.id.noteTextOverview);
+            textDate = (TextView) itemView.findViewById(R.id.noteDate);
+            deleteImg = (ImageView) itemView.findViewById(R.id.note_delete);
+            layoutNote = (LinearLayout) itemView.findViewById(R.id.noteLayout);
+            layoutNote = (LinearLayout) itemView.findViewById(R.id.noteLayout);
+            layoutNote2 = (LinearLayout) itemView.findViewById(R.id.noteLayout2);
+
+
+            context = ctt;
+            item = itemView;
+            delAct = dAct;
+            isMain = main;
 
             titleSize = ttSize;
             textSize = txtSize;
@@ -140,10 +224,15 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteHolder>{
 
                             @Override
                             protected Void doInBackground(Void... voids) {
-//                                NoteDatabase.getDatabase(context).noteDao()
-//                                        .deleteNote(note);
-                                note.setIsDeleted("Yes");
-                                NoteDatabase.getDatabase(context).noteDao().insertNote(note);
+
+                                if(isMain){
+                                    note.setIsDeleted("Yes");
+                                    NoteDatabase.getDatabase(context).noteDao().insertNote(note);
+                                }
+                                else{
+                                    NoteDatabase.getDatabase(context).noteDao()
+                                        .deleteNote(note);
+                                }
                                 return null;
                             }
 
@@ -153,9 +242,16 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteHolder>{
 
 
                         deleteView.dismiss();
-                        mainAct.setNoteClickedPos(position);
 
-                        mainAct.getNotes(MainActivity.REQUEST_DELETE_NOTE, true);
+                        if(isMain){
+                            mainAct.setNoteClickedPos(position);
+                            mainAct.getNotes(MainActivity.REQUEST_DELETE_NOTE, true);
+                        }else{
+                            delAct.setNoteClickedPos(position);
+                            delAct.getNotes(DeletedNotes.REQUEST_DELETE_NOTE, true);
+                        }
+
+
 
                     }
                 });
@@ -175,6 +271,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteHolder>{
             textTitle.setText(note.getTitle());
             textTitle.setOnClickListener(view -> mainAct.onNoteClicked(note, position));
             textTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, titleSize);
+            textTitle.setTextColor(Color.parseColor(note.getText_color()));
 
             String text = note.getText();
 
@@ -192,8 +289,12 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteHolder>{
             textOverview.setText(overview);
             textOverview.setOnClickListener(view -> mainAct.onNoteClicked(note, position));
             textOverview.setTextSize(TypedValue.COMPLEX_UNIT_SP, textSize);
+            textOverview.setTextColor(Color.parseColor(note.getText_color()));
 
             textDate.setText(note.getDate());
+
+            GradientDrawable gradientDrawable = (GradientDrawable) layoutNote.getBackground();
+            gradientDrawable.setColor(Color.parseColor(note.getBackground_color()));
 
             deleteImg.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -201,6 +302,45 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteHolder>{
                     showDeletedNoteDialog(note, position);
                 }
             });
+
+            if(!isMain){
+                long diff = -1;
+
+                try {
+                    SimpleDateFormat sdf = new SimpleDateFormat("dd MMMM yyyy HH:mm a", Locale.ENGLISH);
+                    Date firstDate = sdf.parse(note.getDate());
+                    Date secondDate = sdf.parse(new SimpleDateFormat("dd MMMM yyyy HH:mm a", Locale.getDefault())
+                            .format(new Date()));
+
+//                    Date secondDate = sdf.parse("10 March 2022 15:51 PM");
+                    long diffInMillies = Math.abs(secondDate.getTime() - firstDate.getTime());
+                    diff = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+                }
+                catch (ParseException e) {
+                }
+
+                if(diff>30){
+                    class DeleteNote extends AsyncTask<Void, Void, Void> {
+
+                        @Override
+                        protected Void doInBackground(Void... voids) {
+
+
+                        NoteDatabase.getDatabase(context).noteDao()
+                                .deleteNote(note);
+
+                            return null;
+                        }
+
+                    }
+
+                    new DeleteNote().execute();
+                    delAct.setNoteClickedPos(position);
+                    delAct.getNotes(DeletedNotes.REQUEST_DELETE_NOTE, true);
+                }
+
+            }
+
 
         }
 

@@ -20,7 +20,7 @@
         <entry key="..\:/Work/android_workspace/MobileDev/app/src/main/res/layout/activity_deleted_notes.xml" value="0.21403508771929824" />
         <entry key="..\:/Work/android_workspace/MobileDev/app/src/main/res/layout/activity_login.xml" value="0.21403508771929824" />
         <entry key="..\:/Work/android_workspace/MobileDev/app/src/main/res/layout/activity_main.xml" value="0.21403508771929824" />
-        <entry key="..\:/Work/android_workspace/MobileDev/app/src/main/res/layout/activity_note_app.xml" value="0.4" />
+        <entry key="..\:/Work/android_workspace/MobileDev/app/src/main/res/layout/activity_note_app.xml" value="0.31798245614035087" />
         <entry key="..\:/Work/android_workspace/MobileDev/app/src/main/res/layout/activity_setting.xml" value="0.4" />
         <entry key="..\:/Work/android_workspace/MobileDev/app/src/main/res/layout/activity_sign.xml" value="0.20087719298245615" />
         <entry key="..\:/Work/android_workspace/MobileDev/app/src/main/res/layout/delete_note_view.xml" value="0.10219298245614035" />
@@ -29,7 +29,9 @@
         <entry key="..\:/Work/android_workspace/MobileDev/app/src/main/res/layout/fragment_setting_fragments.xml" value="0.21403508771929824" />
         <entry key="..\:/Work/android_workspace/MobileDev/app/src/main/res/layout/layout_delete_note.xml" value="0.21403508771929824" />
         <entry key="..\:/Work/android_workspace/MobileDev/app/src/main/res/layout/note_view.xml" value="0.264" />
+        <entry key="..\:/Work/android_workspace/MobileDev/app/src/main/res/layout/screen_color_layout.xml" value="0.21403508771929824" />
         <entry key="..\:/Work/android_workspace/MobileDev/app/src/main/res/layout/spinner_layout.xml" value="0.21403508771929824" />
+        <entry key="..\:/Work/android_workspace/MobileDev/app/src/main/res/layout/text_color_layout.xml" value="0.21403508771929824" />
       </map>
     </option>
   </component>

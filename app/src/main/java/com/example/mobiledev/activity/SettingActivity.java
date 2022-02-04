@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -12,6 +13,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Switch;
+import android.widget.TextView;
 
 import com.example.mobiledev.R;
 
@@ -70,19 +72,22 @@ public class SettingActivity extends AppCompatActivity {
         sortArr.remove(sortArr.indexOf(currSort));
         sortArr.add(0, currSort);
 
+
         Spinner SPFontSize = findViewById(R.id.SPFontSize);
         ArrayAdapter<CharSequence> FSadapter = new ArrayAdapter(
                 getApplicationContext(),
-                android.R.layout.simple_spinner_item,
+                R.layout.spinner_layout,
                 textArr);
         SPFontSize.setAdapter(FSadapter);
 
+        TextView SPFontText = (TextView) findViewById(R.id.SPFontSizeText);
 
         SPFontSize.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 textSize = textArr.get(i);
                 isModified = true;
+                SPFontText.setText(textArr.get(i));
             }
 
             @Override
@@ -90,22 +95,42 @@ public class SettingActivity extends AppCompatActivity {
             }
         });
 
+        SPFontText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//                fontSpinner.setVisibility(Spinner.VISIBLE);
+                SPFontSize.performClick();
+            }
+        });
+
         Spinner SPSort = findViewById(R.id.SPSort);
         ArrayAdapter<CharSequence> Sadapter = new ArrayAdapter(getApplicationContext(),
-                android.R.layout.simple_spinner_item,
+                R.layout.spinner_layout,
                 sortArr);
         SPSort.setAdapter(Sadapter);
+
+        TextView SPSortText = (TextView) findViewById(R.id.SPSortText);
 
         SPSort.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 sortType = sortArr.get(i);
                 isModified = true;
+                SPSortText.setText(sortArr.get(i));
+
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
 
+            }
+        });
+
+        SPSortText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//                fontSpinner.setVisibility(Spinner.VISIBLE);
+                SPSort.performClick();
             }
         });
 
@@ -119,12 +144,16 @@ public class SettingActivity extends AppCompatActivity {
         IMGBTNDeleted.setOnClickListener(OCLDeleted);
 
         Switch SWDarkMode = findViewById(R.id.SWDarkMode);
-        SharedPreferences sharedPreferences = null;
-        sharedPreferences = this.getSharedPreferences("night",0);
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+//        SharedPreferences sharedPreferences = null;
+//        sharedPreferences = this.getSharedPreferences("night",0);
         Boolean booleanValue = sharedPreferences.getBoolean("night_mode", true);
 
         if(booleanValue){
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+//            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+            getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
             SWDarkMode.setChecked(true);
         }
 
@@ -133,13 +162,15 @@ public class SettingActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked){
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                    getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+//                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
                     SWDarkMode.setChecked(true);
                     SharedPreferences.Editor editor = finalSharedPreferences.edit();
                     editor.putBoolean("night_mode",true);
                     editor.commit();
                 }else{
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                    getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+//                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
                     SWDarkMode.setChecked(false);
                     SharedPreferences.Editor editor = finalSharedPreferences.edit();
                     editor.putBoolean("night_mode",false);
@@ -153,7 +184,6 @@ public class SettingActivity extends AppCompatActivity {
     private void openMainActWithChange(){
         String filename = "saveState";
         String fileContents = textSize+"\n"+sortType;
-        System.out.println("I am 435344 "+fileContents);
         try (FileOutputStream fos = getApplicationContext().openFileOutput(filename, Context.MODE_PRIVATE)) {
             fos.write(fileContents.getBytes());
             fos.close();
