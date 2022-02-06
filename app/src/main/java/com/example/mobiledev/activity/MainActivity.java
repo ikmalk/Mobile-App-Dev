@@ -212,6 +212,12 @@ public class MainActivity extends AppCompatActivity{
                     noteAdapter.notifyItemRemoved(noteClickedPos);
                 }
 
+                if(notes.size() == 0){
+
+                    // No note
+
+                }
+
             }
         }
         new GetNoteTask().execute();
