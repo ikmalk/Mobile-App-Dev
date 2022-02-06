@@ -277,7 +277,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteHolder>{
 
             String overview = "";
 
-            if(text.length() > 13){
+            if(text.length() > 50){
                 for(int i = 0; i < 13; i++){
                     overview += text.charAt(i);
                 }

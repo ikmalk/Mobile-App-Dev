@@ -29,6 +29,7 @@
                 android:textSize="@dimen/_13ssp"
                 android:textStyle="bold"
                 android:layout_weight="5"
+                android:text="Title"
                 />
             <ImageView
                 android:id="@+id/note_delete"
@@ -52,6 +53,7 @@
             android:layout_marginEnd="@dimen/_6sdp"
             android:textColor="@color/black"
             android:textSize="@dimen/_12sdp"
+            android:text="Text"
             />
 
         <TextView
@@ -63,6 +65,7 @@
             android:layout_marginEnd="@dimen/_6sdp"
             android:textColor="@color/black"
             android:textSize="@dimen/_8ssp"
+            android:text="Date"
             />
 
 

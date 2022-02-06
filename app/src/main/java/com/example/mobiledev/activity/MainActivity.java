@@ -30,6 +30,7 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity{
 
@@ -75,7 +76,7 @@ public class MainActivity extends AppCompatActivity{
              */
             @Override
             public void onClick(View V){
-                openActivitySign();
+                openActivityLogin();
             }
         });
 
@@ -145,8 +146,7 @@ public class MainActivity extends AppCompatActivity{
 
         FileInputStream fis = null;
         try {
-            fis = getApplicationContext().openFileInput("saveState"
-            );
+            fis = getApplicationContext().openFileInput("saveState");
         } catch (FileNotFoundException e) {
             createSaveFile();
             getSaveState();
@@ -219,6 +219,13 @@ public class MainActivity extends AppCompatActivity{
 
     private void openActivitySign(){
         Intent intent = new Intent(this, SignActivity.class);
+        startActivity(intent);
+    }
+
+    // Added method
+
+    private void openActivityLogin(){
+        Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
     }
 

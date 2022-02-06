@@ -12,18 +12,23 @@ import androidx.core.content.res.ResourcesCompat;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.media.Image;
+import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.provider.Settings;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.AdapterView;
@@ -38,11 +43,15 @@ import com.example.mobiledev.database.NoteDatabase;
 import com.example.mobiledev.R;
 import com.example.mobiledev.entities.Note;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Random;
 
 public class NoteAppActivity extends AppCompatActivity {
 
@@ -59,6 +68,7 @@ public class NoteAppActivity extends AppCompatActivity {
     private String textColor;
     private String screenColor;
     private boolean onCreate;
+    private String imagePath;
 
 
     @Override
@@ -71,6 +81,7 @@ public class NoteAppActivity extends AppCompatActivity {
         }
 
         onCreate = true;
+        imagePath = "";
 
         ImageView imageBack = (ImageView) findViewById(R.id.imageBack);
         imageBack.setOnClickListener((v) -> {onBackPressed();});
@@ -293,6 +304,59 @@ public class NoteAppActivity extends AppCompatActivity {
 
     }
 
+    public boolean isStoragePermissionGranted() {
+        String TAG = "Storage Permission";
+        if (Build.VERSION.SDK_INT >= 23) {
+            if (this.checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    == PackageManager.PERMISSION_GRANTED) {
+                Log.v(TAG, "Permission is granted");
+                return true;
+            } else {
+                Log.v(TAG, "Permission is revoked");
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+                return false;
+            }
+        }
+        else { //permission is automatically granted on sdk<23 upon installation
+            Log.v(TAG,"Permission is granted");
+            return true;
+        }
+    }
+
+
+    private void saveImage(Bitmap finalBitmap, Uri uri) {
+
+        String root = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString();
+        System.out.println(uri.toString());
+        if (isStoragePermissionGranted()) {
+            System.out.println(uri.toString());
+            File myDir = new File(root + "/saved_images");
+            if (!myDir.exists()) {
+                myDir.mkdirs();
+            }
+
+            File fn= new File(uri.getPath());
+
+            String fname = fn.getName() + ".jpg";
+            File file = new File(myDir, fname);
+            System.out.println(file.getPath());
+            if (file.exists())
+                file.delete();
+            try {
+                FileOutputStream out = new FileOutputStream(file);
+                finalBitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
+                out.flush();
+                out.close();
+                imagePath = file.getPath();
+                System.out.println(imagePath);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            MediaScannerConnection.scanFile(this, new String[]{file.toString()}, new String[]{file.getName()}, null);
+        }
+    }
+
     private void pickFromGallery(View view) {
         if(isPermissionGranted()){
             pickImageFromGallery();
@@ -350,7 +414,17 @@ public class NoteAppActivity extends AppCompatActivity {
                 if(data != null){
                     Uri uri = data.getData();
                     if(uri != null){
-                        imageNote.setImageURI(uri);
+
+                        Uri imgUri = data.getData();
+                        try {
+                            Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imgUri);
+                            imageNote.setImageBitmap(bitmap);
+                            saveImage(bitmap, imgUri);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+
                     }
                 }
             }
@@ -466,6 +540,26 @@ public class NoteAppActivity extends AppCompatActivity {
         textColor = updateNote.getText_color();
         screenColor = updateNote.getBackground_color();
 
+        if(updateNote.getImage_path() != null){
+            if(!updateNote.getImage_path().equals("")){
+                imagePath = updateNote.getImage_path();
+                Uri uri = Uri.parse(new File(imagePath).toString());
+                System.out.println(imagePath);
+
+                Bitmap bmp = BitmapFactory.decodeFile(uri.toString());
+                imageNote.setImageBitmap(bmp);
+//                Bitmap bitmap = null;
+//                try {
+//                    bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), uri);
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//                imageNote.setImageBitmap(bitmap);
+
+            }
+        }
+
+
     }
 
     private void saveNote(int requestCode){
@@ -485,6 +579,7 @@ public class NoteAppActivity extends AppCompatActivity {
         note.setFont(fnt);
         note.setBackground_color(screenColor);
         note.setText_color(textColor);
+        note.setImage_path(imagePath);
 
         if(updateNote != null){
             note.setId(updateNote.getId());
